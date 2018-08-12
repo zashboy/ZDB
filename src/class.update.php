@@ -1,0 +1,202 @@
+<?php
+
+    /**
+      * Created on Sat Aug 04 2018
+      *
+      * class.update.php
+      *
+      * This class handles the update clauses
+      *
+      * @category  database wrapper
+      * @package   ZDB
+      * @author    zashboy
+      * @license   https://www.gnu.org/licenses/gpl-3.0.en.html
+      * @version   0.0.1
+      * @link      https://www.zashboy.com
+      * @see       class.ZDB.php
+      * @since     File available since Release 0.0.1
+      *
+      * Copyright (c) 2018 zashboy.com
+     */
+
+class update extends PDO
+{
+
+   /**
+      * Created on Sat Aug 04 2018
+      * @desc Array of the statement variable passed by the zdb.php
+      * @var  array
+     */
+    public $array;
+
+   /**
+      * Created on Sat Aug 04 2018
+      * @desc PDO instance
+      * @var  object
+     */
+    public $conn;
+
+   /**
+      * Created on Sat Aug 04 2018
+      * @desc user variables
+      * @var  array
+     */
+    private $variables;
+
+   /**
+      * Created on Sat Aug 04 2018
+      * @name   __construct
+      * @desc   declare connection property and the statement, execute the prepared statement and return its value
+      * @param  array $array
+      * @return array on success, null or exception on fail
+     */
+    public function __construct($array = NULL, $conn = NULL, $variables = NULL)
+    {
+        //PDO insatnce
+        $this->conn = $conn;
+        $this->variables = $variables;
+        //the prepared statement
+        $stmt = $this->prepareStmt($array);
+
+        return $this->run($stmt);
+
+    }
+
+   /**
+      * Created on Sat Aug 04 2018
+      * @name   prepareStmt
+      * @desc   Gathering the necessary info and prepare the statement
+      * @param  array $array
+      * @return array statement string, array for binding, fetch option int
+     */
+
+    public function prepareStmt($array = NULL)
+    {
+
+        $tableName = $set = $where = $bindarr = NULL;
+
+        if(is_array($array)){
+            foreach ($array as $key => $value) {
+                $$key = $value;
+            }
+        }
+        if(isset($tableName) && isset($set)){
+
+            $tableName = "`".str_replace("`","``",$tableName)."`";
+            $set = $this->set($set);
+            $where = $this->where($where);
+            $bindarr = array_merge($set['bindarr'], $where['bindarr']); // keys in the arrays cannot be the same or the last one overwrite the previous one
+    
+            return array('stmt' => "UPDATE " . $tableName . " SET " . $set['set'] . $where['where'], 'bindarr' => $where['bindarr']);
+
+        }
+
+    }
+
+    /**
+      * Created on Thu Aug 02 2018
+      * @name   set()
+      * @desc   prepare the set clause to sql
+      * @param  array,string 
+      * @return string
+     */
+
+    public function set($set = NULL)
+    {
+        if(isset($set)){
+
+            if(is_array($set) && count($set) > 0){
+
+                $_set = '';
+                $_set .= 'SET ';
+
+                foreach ($set as $key => $value) {
+                    $_set .= '`' . $key . '` = :' . $key;
+
+                        for ($i=1; $i < count($where); $i++) { 
+                            $_where .= ', ';
+                        }
+                    $_where .= ' ';
+
+                    $bindarr[':' . $key] = $value;
+                }
+                return array('set' => $_where, 'bindarr' => $bindarr);
+
+            } else {
+                return 'SET ' . $where . ' ';
+            }
+        } else {
+            return NULL;
+        }
+
+    }
+    
+    /**
+      * Created on Thu Aug 02 2018
+      * @name   where()
+      * @desc   prepare the where clause to sql
+      * @param  array,string 
+      * @return string
+     */
+
+    public function where($where = NULL)
+    {
+        if(isset($where)){
+
+            if(is_array($where) && count($where) > 0){
+
+                $_where = '';
+                $_where .= 'WHERE ';
+
+                foreach ($where as $key => $value) {
+                    $_where .= '`' . $key . '` = :' . $key;
+
+                        for ($i=1; $i < count($where); $i++) { 
+                            $_where .= ', ';
+                        }
+                    $_where .= ' ';
+
+                    $bindarr[':' . $key] = isset($this->variables['where'][$key]) ? $this->variables['where'][$key] : $value;
+                }
+                return array('where' => $_where, 'bindarr' => $bindarr);
+
+            } else {
+                return 'WHERE ' . $where . ' ';
+            }
+        } else {
+            return NULL;
+        }
+
+    }
+
+   /**
+      * Created on Sat Aug 11 2018
+      * @name   run()
+      * @desc   execute the sql statement 
+      * @param  array $stmt
+      * @return array $data or NULL
+     */
+    public function run($stmt = NULL)
+    {
+
+        try {
+
+            $query = $this->conn->prepare($stmt['stmt']);
+            $dataRaw = $query->execute($stmt['bindarr']);
+
+                if($query->rowCount() != 0){
+                    return $this->data = $query->rowCount() . ' rows updated';
+
+                } else {
+                    return $this->data = NULL;
+            }  
+            
+        } catch (Throwable $t) {
+            $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
+            Log::general($t->getMessage().' | Caught: '.$t->getFile().' | '.$t->getLine());
+        }
+
+    }
+}
+
+?>
