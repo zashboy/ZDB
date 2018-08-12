@@ -1,0 +1,43 @@
+{
+    "config": {
+        "HOSTNAME": "your_hostname",
+        "DBNAME": "your_dbname",
+        "USERNAME": "your_username",
+        "PASSWORD": "your_password"
+    },
+    "getPages": {
+        "select-1": {
+            "tableName": "pages",
+            "where": {
+                "name": "home"
+            },
+            "fetch": 2
+        },
+        "select-2": {
+            "tableName": "pages",
+            "where": {
+                "name": "about"
+            },
+            "fetch": 2
+        },
+        "select-3": {
+            "tableName": "pages_blog",
+            "where": {
+                "name": "blog"
+            },
+            "fetch": 2
+        },
+        "insert-0": {
+            "sql": "CREATE DATABASE test2"
+        }
+
+    },
+    "getTestPages": {
+        "select": {
+            "tableName": "pages",
+            "where": {
+                "name": "home"
+            }
+        }
+    }
+}

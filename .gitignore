@@ -1,0 +1,11 @@
+*.log
+
+*.txt
+
+config/**
+
+log/**
+
+.htaccess
+
+.vscode/**
