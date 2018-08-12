@@ -49,7 +49,14 @@ example with an array
 $test = new ZDB(NULL, ['delete'=>['tableName' => 'websites', 'where'=>['website_id'=>1]],
         'insert'=>['tableName' => 'websites', 'values'=>['website_name'=>'jsdkjsakfsa','server_name'=>'dasdadasfas','creation_date'=>'1980-11-23']]]);
 ```	
-
+If you've got your object you can find all of your responses in the data property
+```PHP
+<?php
+$test->data; // all of the data in an array;
+$test->exception; //caught exceptions
+$test->data->exectime //the execution time in microseconds
+?>
+```
 You can find a detailed documentation on the link below
 
 [ZDB Documentation](https://www.zashboy.com/zdb "ZDB Documentation")
