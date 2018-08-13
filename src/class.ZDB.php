@@ -55,7 +55,7 @@ class ZDB
       * @param  string $stmtid
       * @param  array or file path $input
       * @var array $ var the variable values
-      * @return exception on fail (log it)
+      * @return exception on fail
      */
 
     public function __construct($stmtid = NULL, $input = NULL, $var = NULL)
@@ -90,7 +90,6 @@ class ZDB
 
         } catch (Throwable $t){
             $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
-            Log::general($t->getMessage().' | Caught: '.$t->getFile().' | '.$t->getLine());
         }
 
     }

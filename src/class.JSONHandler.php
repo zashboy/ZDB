@@ -47,7 +47,6 @@ class JSONHandler
             }
         } catch (Throwable $t) {
             throw $t;
-            Log::general($t->getMessage().' | Caught: '.$t->getFile().' | '.$t->getLine());
         }
     }
 
