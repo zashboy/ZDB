@@ -58,11 +58,11 @@ class ZDB
       * @return exception on fail
      */
 
-    public function __construct($stmtid = NULL, $input = NULL, $var = NULL)
+    public function __construct($input = NULL, $stmtid = NULL, $var = NULL)
     {
 
-        $this->stmtid = $stmtid;
         $this->input = $input;
+        $this->stmtid = $stmtid;
         $this->var = $var;
         $this->exception = NULL;
         $this->data = NULL;

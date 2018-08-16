@@ -41,12 +41,12 @@ Manual install
 for example with a JSON file:
 ```PHP
 <?php
-	$test = new ZDB('>>currently used section<<', PATH . 'filename.json', ['getPages' => ['select-1' => ['where' => ['name' => 'disclaimer']]]]);
+	$test = new ZDB(PATH . 'filename.json', '>>currently used section<<', ['getPages' => ['select-1' => ['where' => ['name' => 'disclaimer']]]]);
 ?>
 ```
 example with an array
 ```PHP
-$test = new ZDB(NULL, ['delete'=>['tableName' => 'websites', 'where'=>['website_id'=>1]],
+$test = new ZDB(['delete'=>['tableName' => 'websites', 'where'=>['website_id'=>1]],
         'insert'=>['tableName' => 'websites', 'values'=>['website_name'=>'jsdkjsakfsa','server_name'=>'dasdadasfas','creation_date'=>'1980-11-23']]]);
 ```	
 If you've got your object you can find all of your responses in the data property
