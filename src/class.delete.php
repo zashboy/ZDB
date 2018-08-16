@@ -86,7 +86,7 @@ class delete extends PDO
             $orderby = $this->orderby($orderby);
              $limit = $this->limit($limit);
     
-            return array('stmt' => "DELETE FROM " . $tableName . " " . $where['where'] .  $orderby .  $limit, 'bindarr' => $where['bindarr'], 'fetch' => $fetch);
+            return array('stmt' => "DELETE FROM " . $tableName . " " . $where['where'] .  $orderby .  $limit, 'bindarr' => $where['bindarr']);
 
         }
 
