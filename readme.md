@@ -1,7 +1,7 @@
 # ZDB
 ---
 	
-# A PHP database handler library based on PDO, the input can be an array or a JSON file, it supports multiple queries, as well. (it works with mariadb and mysql)
+# A PHP database handler class based on PDO, the input can be an array or a JSON file, it supports multiple queries, as well. (it works with mariadb and mysql)
 ---
 ## Installation
 ---
