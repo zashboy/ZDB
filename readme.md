@@ -8,7 +8,7 @@
 Install with composer
 1. if you use composer you can install it if you add it to your composer.json 
 2. connection parameters
-	1.you can define them like global variables in your config.php
+	1. you can define them like global variables in your config.php
 	```PHP
 	<?php
 		define('HOSTNAME', 'your_hostname');
