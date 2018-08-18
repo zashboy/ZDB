@@ -113,14 +113,14 @@ class update extends PDO
                 foreach ($set as $key => $value) {
                     $_set .= '`' . $key . '` = :' . $key;
 
-                        for ($i=1; $i < count($where); $i++) { 
-                            $_where .= ', ';
+                        for ($i=1; $i < count($set); $i++) { 
+                            $_set .= ', ';
                         }
-                    $_where .= ' ';
+                    $_set .= ' ';
 
                     $bindarr[':' . $key] = $value;
                 }
-                return array('set' => $_where, 'bindarr' => $bindarr);
+                return array('set' => $_set, 'bindarr' => $bindarr);
 
             } else {
                 return 'SET ' . $where . ' ';

@@ -10,12 +10,12 @@ Install with composer
 2. connection parameters
 	1.you can define them like global variables in your config.php
 	```PHP
+	<?php
 		define('HOSTNAME', 'your_hostname');
 		define('DBNAME', 'your_databasename');
 		define('USERNAME', 'your_username');
 		define('PASSWORD', 'your_password');
 		define('PATH', 'your/base/path');
-	<?php
 	?>
 	``` 
 	2. or you can declare them in the json file (sample json in the src folder)
