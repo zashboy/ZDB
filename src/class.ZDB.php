@@ -124,14 +124,38 @@ class ZDB
 
     public function prepInputFile()
     {
-        $result = [];
-        foreach($this->input[$this->stmtid] as $key => $value){
-            //chop off the characters after the "-" character from the end of the keys
-            $class = strpos($key, "-") ? substr($key, 0, strpos($key, "-")) : $key;
-            $vars = isset($this->var[$this->stmtid][$key]) ? $this->var[$this->stmtid][$key] : NULL;
-            $result[] = new $class($value, $this->conn, $vars);
+        if(isset($this->stmtid) && isset($this->var)) {
+            $result = [];
+            foreach($this->input[$this->stmtid] as $key => $value){
+                //if we've got - character in 
+                $separator = strpos($key, "-");
+                //chop off the characters after the "-" character from the end of the keys to get the class name
+                $class = $separator ? substr($key, 0, $separator) : $key;
+                //get the characters after the "-" sign to make the index
+                $index = $separator ? substr($key, $separator+1) : NULL;
+
+                $vars = isset($this->var[$this->stmtid][$key]) ? $this->var[$this->stmtid][$key] : NULL;
+                $result[$index] = new $class($value, $this->conn, $vars);
+            }
+            return $this->returnData($result);
         }
-        return $this->returnData($result);
+    }
+
+    /**
+      * Created on Sun Aug 05 2018
+      * @name   runFile()
+      * @desc   get the paramss and run the statement from the file
+      * @param  string 
+      * @return array of results
+     */
+
+    public function runFile($key = NULL, $var = NULL)
+    {
+
+        $this->stmtid = $key;
+        $this->var = $var;
+
+        return $this->prepInputFile();
 
     }
 
@@ -147,7 +171,7 @@ class ZDB
     {
         $data = [];
         foreach ($objects as $key => $value) {
-            $data[] = $value->data;
+            $data[$key] = $value->data;
         }
         //execution time 
         $data['exectime'] = $this->executiontime + microtime(true);

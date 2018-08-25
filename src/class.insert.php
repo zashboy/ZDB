@@ -57,7 +57,6 @@ class  insert extends PDO
         $this->variables = $variables;
         //the prepared statement
         $stmt = $this->prepareStmt($array);
-        var_dump($stmt);
 
         return $this->run($stmt);
 

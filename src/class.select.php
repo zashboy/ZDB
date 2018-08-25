@@ -82,15 +82,16 @@ class select extends PDO
                 $$key = $value;
             }
         }
-        if(isset($tableName) && isset($where)){
+
+        if(isset($tableName)){
 
             $what = $this->what($what);
             //if the tablename declared in the variables array then use that one
-            $tableName = isset($this->variables['tableName']) ? "`".str_replace("`","``",$varaibles['tableName'])."`" : "`".str_replace("`","``",$tableName)."`";
+            $tableName = isset($this->variables['tableName']) ? "`" . str_replace("`", "``", $this->variables['tableName']) . "`" : "`" . str_replace("`", "``", $tableName) ."`";
             $where = $this->where($where);
             $orderby = $this->orderby($orderby);
             $limit = $this->limit($limit);
-    
+
             return array('stmt' => "SELECT " . $what  .  " FROM " . $tableName . " " . $where['where'] .  $orderby .  $limit, 'bindarr' => $where['bindarr'], 'fetch' => $fetch);
 
         }
