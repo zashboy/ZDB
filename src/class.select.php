@@ -122,12 +122,18 @@ class select extends PDO
                         }
                     $_where .= ' ';
 
-                    $bindarr[':' . $key] = isset($this->variables['where'][$key]) ? $this->variables['where'][$key] : $value;
+                    if($value == '$lastSelectedId'){
+                        $bindarr[':' . $key] = ZDB::lastSelectedId();
+
+                    } else {
+                        $bindarr[':' . $key] = isset($this->variables['where'][$key]) ? $this->variables['where'][$key] : $value;
+
+                    }
                 }
                 return array('where' => $_where, 'bindarr' => $bindarr);
 
             } else {
-                return 'WHERE ' . $where . ' ';
+                return array('where' => 'WHERE ' . $where . ' ', 'bindarr' => NULL);
             }
         } else {
             return NULL;
@@ -193,7 +199,7 @@ class select extends PDO
             $query = $this->conn->prepare($stmt['stmt']);
             $dataRaw = $query->execute($stmt['bindarr']);
 
-                if($query->rowCount() != 0){
+            if($query->rowCount() != 0){
                     $data = $query->fetchAll($fetch);
 
                     return $this->data = $data;

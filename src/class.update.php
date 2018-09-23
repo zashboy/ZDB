@@ -86,8 +86,8 @@ class update extends PDO
             $set = $this->set($set);
             $where = $this->where($where);
             $bindarr = array_merge($set['bindarr'], $where['bindarr']); // keys in the arrays cannot be the same or the last one overwrite the previous one
-    
-            return array('stmt' => "UPDATE " . $tableName . " SET " . $set['set'] . $where['where'], 'bindarr' => $where['bindarr']);
+
+            return array('stmt' => "UPDATE " . $tableName . $set['set'] . $where['where'], 'bindarr' => $bindarr);
 
         }
 
@@ -108,7 +108,7 @@ class update extends PDO
             if(is_array($set) && count($set) > 0){
 
                 $_set = '';
-                $_set .= 'SET ';
+                $_set .= ' SET ';
 
                 foreach ($set as $key => $value) {
                     $_set .= '`' . $key . '` = :' . $key;
@@ -123,7 +123,7 @@ class update extends PDO
                 return array('set' => $_set, 'bindarr' => $bindarr);
 
             } else {
-                return 'SET ' . $where . ' ';
+                return array('set' => 'SET ' . $where . ' ', 'bindarr' => NULL);
             }
         } else {
             return NULL;
@@ -161,7 +161,7 @@ class update extends PDO
                 return array('where' => $_where, 'bindarr' => $bindarr);
 
             } else {
-                return 'WHERE ' . $where . ' ';
+                return array('where' => 'WHERE ' . $where . ' ', 'bindarr' => NULL);
             }
         } else {
             return NULL;
@@ -184,7 +184,7 @@ class update extends PDO
             $query = $this->conn->prepare($stmt['stmt']);
             $dataRaw = $query->execute($stmt['bindarr']);
 
-                if($query->rowCount() != 0){
+            if($query->rowCount() != 0){
                     return $this->data = $query->rowCount() . ' rows updated';
 
                 } else {

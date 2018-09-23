@@ -47,6 +47,13 @@ class ZDB
 
     /**
       * Created on Sun Aug 05 2018
+      * @desc last selected id
+      * @var  int
+     */
+    public static $lastSelectedId;
+    
+    /**
+      * Created on Sun Aug 05 2018
       * @name   __construct()
       * @desc   Declare properties, decide if the input an array or a file, 
       * declare the input prop and teh config prop based on that, instatiate the PDO based on that
@@ -64,24 +71,25 @@ class ZDB
         $this->input = $input;
         $this->stmtid = $stmtid;
         $this->var = $var;
+        static::$lastSelectedId = NULL;
         $this->exception = NULL;
         $this->data = NULL;
         $this->executiontime = -microtime(true);
 
         try {
-            if(!isset($input)){
+            if(!isset($this->input)){
                 throw new Exception('The input is undefined!');
             } elseif(is_array($this->input)){
-                $this->input = $input;
+                $this->inputarray = $this->input;
                 $this->config = NULL;
                 $this->conn = new PDO("mysql:host=" . HOSTNAME . ";dbname=" . DBNAME, USERNAME, PASSWORD);
                 $this->prepInputArray();
             } elseif(is_file($this->input)){
-                $this->input = JSONHandler::read($this->input);
-                if(!isset($this->input)){
+                $this->inputfile = JSONHandler::read($this->input);
+                if(!isset($this->inputfile)){
                     throw new Exception("It's not a valid JSON file");
                 }
-                $this->config = $this->input['config'];
+                $this->config = $this->inputfile['config'];
                 $this->conn = new PDO("mysql:host=" . $this->config['HOSTNAME'] . ";dbname=" . $this->config['DBNAME'], $this->config['USERNAME'], $this->config['PASSWORD']);
                 $this->prepInputFile();
             } else {
@@ -105,10 +113,15 @@ class ZDB
     public function prepInputArray()
     {
         $result = [];
-        foreach ($this->input as $key => $value) {
-            //chop off the characters after the "-" character from the end of the keys
-            $class = strpos($key, "-") ? substr($key, 0, strpos($key, "-")) : $key;
-            $result[] = new $class($value, $this->conn);
+        foreach ($this->inputarray as $key => $value) {
+            //if we've got - character in 
+            $separator = strpos($key, "-");
+            //chop off the characters after the "-" character from the end of the keys to get the class name
+            $class = $separator ? substr($key, 0, $separator) : $key;
+            //get the characters after the "-" sign to make the index
+            $index = $separator ? substr($key, $separator+1) : NULL;
+
+            $result[$index] = new $class($value, $this->conn);
         }
         return $this->returnData($result);
 
@@ -126,7 +139,7 @@ class ZDB
     {
         if(isset($this->stmtid) && isset($this->var)) {
             $result = [];
-            foreach($this->input[$this->stmtid] as $key => $value){
+            foreach($this->inputfile[$this->stmtid] as $key => $value){
                 //if we've got - character in 
                 $separator = strpos($key, "-");
                 //chop off the characters after the "-" character from the end of the keys to get the class name
@@ -136,6 +149,8 @@ class ZDB
 
                 $vars = isset($this->var[$this->stmtid][$key]) ? $this->var[$this->stmtid][$key] : NULL;
                 $result[$index] = new $class($value, $this->conn, $vars);
+                self::$lastSelectedId = isset($result[$index]->data[0]['id']) ? $result[$index]->data[0]['id'] : NULL;
+
             }
             return $this->returnData($result);
         }
@@ -144,8 +159,9 @@ class ZDB
     /**
       * Created on Sun Aug 05 2018
       * @name   runFile()
-      * @desc   get the paramss and run the statement from the file
+      * @desc   get the params and run the statement from the file
       * @param  string 
+      * @param  array
       * @return array of results
      */
 
@@ -159,6 +175,37 @@ class ZDB
 
     }
 
+    /**
+      * Created on Sun Aug 05 2018
+      * @name   runArray()
+      * @desc   get the params and run the statement from the array
+      * @param  array 
+      * @return array of results
+     */
+
+    public function runArray($array = NULL)
+    {
+
+        $this->inputarray = $array;
+
+        return $this->prepInputArray();
+
+    }
+    
+    /**
+      * Created on Sun Aug 05 2018
+      * @name   lastSelectedId
+      * @desc   return the last selected id from the queue if there is column with that name
+      * @return integer
+     */
+
+    public static function lastSelectedId()
+    {
+
+        return self::$lastSelectedId;
+
+    }
+    
    /**
       * Created on Sun Aug 05 2018
       * @name   returnData()
