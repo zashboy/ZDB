@@ -85,7 +85,14 @@ class update extends PDO
             $tableName = "`".str_replace("`","``",$tableName)."`";
             $set = $this->set($set);
             $where = $this->where($where);
-            $bindarr = array_merge($set['bindarr'], $where['bindarr']); // keys in the arrays cannot be the same or the last one overwrite the previous one
+
+            if(!isset($set['bindarr'])){
+                $bindarr = $where['bindarr'];
+            } elseif(!isset($where['bindarr'])){
+                $bindarr = $set['bindarr'];
+            } else {
+                $bindarr = array_merge($set['bindarr'], $where['bindarr']); // keys in the arrays cannot be the same or the last one overwrite the previous one
+            }
 
             return array('stmt' => "UPDATE " . $tableName . $set['set'] . $where['where'], 'bindarr' => $bindarr);
 
@@ -123,7 +130,7 @@ class update extends PDO
                 return array('set' => $_set, 'bindarr' => $bindarr);
 
             } else {
-                return array('set' => 'SET ' . $where . ' ', 'bindarr' => NULL);
+                return array('set' => ' SET ' . $set . ' ', 'bindarr' => NULL);
             }
         } else {
             return NULL;
@@ -161,7 +168,7 @@ class update extends PDO
                 return array('where' => $_where, 'bindarr' => $bindarr);
 
             } else {
-                return array('where' => 'WHERE ' . $where . ' ', 'bindarr' => NULL);
+                return array('where' => 'WHERE ' . $where, 'bindarr' => NULL);
             }
         } else {
             return NULL;

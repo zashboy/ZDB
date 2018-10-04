@@ -92,7 +92,16 @@ class select extends PDO
             $orderby = $this->orderby($orderby);
             $limit = $this->limit($limit);
 
-            return array('stmt' => "SELECT " . $what  .  " FROM " . $tableName . " " . $where['where'] .  $orderby .  $limit, 'bindarr' => $where['bindarr'], 'fetch' => $fetch);
+            if(!isset($bindarr)){
+                $bindarr_fin = $where['bindarr'];
+            } elseif(!isset($where['bindarr'])){
+                $bindarr_fin = $bindarr;
+            } else {
+                $bindarr_fin = array_merge($bindarr, $where['bindarr']); // keys in the arrays cannot be the same or the last one overwrite the previous one
+            }
+
+
+            return array('stmt' => "SELECT " . $what  .  " FROM " . $tableName . " " . $where['where'] .  $orderby .  $limit, 'bindarr' => $bindarr_fin, 'fetch' => $fetch);
 
         }
 
@@ -200,12 +209,12 @@ class select extends PDO
             $dataRaw = $query->execute($stmt['bindarr']);
 
             if($query->rowCount() != 0){
-                    $data = $query->fetchAll($fetch);
+                $data = $query->fetchAll($fetch);
 
-                    return $this->data = $data;
+                return $this->data = $data;
 
-                } else {
-                  return $this->data = NULL;
+            } else {
+                return $this->data = NULL;
             }  
             
         } catch (Throwable $t) {
