@@ -73,7 +73,7 @@ class  insert extends PDO
     public function prepareStmt($array = NULL)
     {
 
-        $tableName = $values = $bindarr = NULL;
+        $tableName = $values = $bindarr = $updatedup = NULL;
 
         if(is_array($array)){
             foreach ($array as $key => $value) {
@@ -84,8 +84,17 @@ class  insert extends PDO
 
             $tableName = "`".str_replace("`","``",$tableName)."`";
             $values = $this->values($values);
+            $updatedup = $this->updatedup($updatedup);
+
+            if(!isset($values['bindarr'])){
+                $bindarr = $updatedup['bindarr'];
+            } elseif(!isset($updatedup['bindarr'])){
+                $bindarr = $values['bindarr'];
+            } else {
+                $bindarr = array_merge($values['bindarr'], $updatedup['bindarr']); // keys in the arrays cannot be the same or the last one overwrite the previous one
+            }
     
-            return array('stmt' => "INSERT INTO " . $tableName . "(" . $values['col'] . ") VALUES (" . $values['val'] . ")", 'bindarr' => $values['bindarr']);
+            return array('stmt' => "INSERT INTO " . $tableName . "(" . $values['col'] . ") VALUES (" . $values['val'] . ")" . $updatedup['set'], 'bindarr' => $bindarr);
 
         }
 
@@ -110,6 +119,42 @@ class  insert extends PDO
 
     }
     
+    /**
+      * Created on Thu Oct 13 2018
+      * @name   updatedup()
+      * @desc   prepare the set clause to sql
+      * @param  array,string 
+      * @return array,string
+     */
+
+    public function updatedup($set = NULL)
+    {
+        if(isset($set)){
+
+            if(is_array($set) && count($set) > 0){
+
+                $_set = '';
+                $_set .= ' ON DUPLICATE KEY UPDATE ';
+
+                foreach ($set as $key => $value) {
+                    
+                    $_set .= '`' . $key . '` = :' . $key;
+
+                    $_set .= ', ';
+
+                    $bindarr[':' . $key] = $value;
+                }
+                return array('set' => rtrim($_set, ", ") . ' ', 'bindarr' => $bindarr);
+
+            } else {
+                return array('set' => ' ON DUPLICATE KEY UPDATE ' . $set . ' ', 'bindarr' => NULL);
+            }
+        } else {
+            return array('set' => NULL);
+        }
+
+    }
+    
    /**
       * Created on Sat Aug 11 2018
       * @name   run()
@@ -124,8 +169,9 @@ class  insert extends PDO
 
             $query = $this->conn->prepare($stmt['stmt']);
             $dataRaw = $query->execute($stmt['bindarr']);
-
-                if($query->rowCount() != 0){
+            var_dump($query);
+            var_dump($stmt['bindarr']);
+            if($query->rowCount() != 0){
                     return $this->data = $query->rowCount() . ' rows inserted';
 
                 } else {

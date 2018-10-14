@@ -120,14 +120,11 @@ class update extends PDO
                 foreach ($set as $key => $value) {
                     $_set .= '`' . $key . '` = :' . $key;
 
-                        for ($i=1; $i < count($set); $i++) { 
-                            $_set .= ', ';
-                        }
-                    $_set .= ' ';
+                    $_set .= ', ';
 
                     $bindarr[':' . $key] = $value;
                 }
-                return array('set' => $_set, 'bindarr' => $bindarr);
+                return array('set' => rtrim($_set, ", ") . ' ', 'bindarr' => $bindarr);
 
             } else {
                 return array('set' => ' SET ' . $set . ' ', 'bindarr' => NULL);
@@ -158,14 +155,11 @@ class update extends PDO
                 foreach ($where as $key => $value) {
                     $_where .= '`' . $key . '` = :' . $key;
 
-                        for ($i=1; $i < count($where); $i++) { 
-                            $_where .= ', ';
-                        }
-                    $_where .= ' ';
+                    $_where .= ', ';
 
                     $bindarr[':' . $key] = isset($this->variables['where'][$key]) ? $this->variables['where'][$key] : $value;
                 }
-                return array('where' => $_where, 'bindarr' => $bindarr);
+                return array('where' => rtrim($_where, ", ") . ' ', 'bindarr' => $bindarr);
 
             } else {
                 return array('where' => 'WHERE ' . $where, 'bindarr' => NULL);

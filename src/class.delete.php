@@ -114,11 +114,10 @@ class delete extends PDO
                         for ($i=1; $i < count($where); $i++) { 
                             $_where .= ', ';
                         }
-                    $_where .= ' ';
 
                     $bindarr[':' . $key] = isset($this->variables['where'][$key]) ? $this->variables['where'][$key] : $value;
                 }
-                return array('where' => $_where, 'bindarr' => $bindarr);
+                return array('where' => rtrim($_where, ", ") . ' ', 'bindarr' => $bindarr);
 
             } else {
                 return 'WHERE ' . $where . ' ';
