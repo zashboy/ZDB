@@ -131,6 +131,10 @@ class select extends PDO
                     if(count($where) > 1) {
                         $_where .= ' AND ';
                     }
+<<<<<<< HEAD
+=======
+                    $_where .= ' ';
+>>>>>>> 6d922ab5b0f20cdf7ee82ab41375bcad97e6fd5d
 
                     if($value == '$lastSelectedId'){
                         $bindarr[':' . $key] = ZDB::lastSelectedId();
@@ -140,7 +144,11 @@ class select extends PDO
 
                     }
                 }
+<<<<<<< HEAD
                 return array('where' => rtrim($_where, " AND ") . ' ', 'bindarr' => $bindarr);
+=======
+                return array('where' => rtrim($_where, " AND "), 'bindarr' => $bindarr);
+>>>>>>> 6d922ab5b0f20cdf7ee82ab41375bcad97e6fd5d
 
             } else {
                 return array('where' => 'WHERE ' . $where . ' ', 'bindarr' => NULL);

@@ -144,7 +144,11 @@ class  insert extends PDO
 
                     $bindarr[':' . $key] = $value;
                 }
+<<<<<<< HEAD
                 return array('set' => rtrim($_set, ", ") . ' ', 'bindarr' => $bindarr);
+=======
+                return array('set' => rtrim($_set, ", "), 'bindarr' => $bindarr);
+>>>>>>> 6d922ab5b0f20cdf7ee82ab41375bcad97e6fd5d
 
             } else {
                 return array('set' => ' ON DUPLICATE KEY UPDATE ' . $set . ' ', 'bindarr' => NULL);
