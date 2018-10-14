@@ -146,7 +146,7 @@ class select extends PDO
                 return array('where' => 'WHERE ' . $where . ' ', 'bindarr' => NULL);
             }
         } else {
-            return NULL;
+            return ['where' => NULL];
         }
 
     }
