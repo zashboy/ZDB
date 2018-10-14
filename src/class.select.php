@@ -75,7 +75,9 @@ class select extends PDO
     public function prepareStmt($array = NULL)
     {
 
-        $what = $tableName = $where = $orderby = $limit = $bindarr = $fetch = NULL;
+        $what = $tableName = $where = $orderby = $limit = $bindarr = NULL;
+        //default fetch option FETCH_ASSOC
+        $fetch = 2;
 
         if(is_array($array)){
             foreach ($array as $key => $value) {
@@ -126,9 +128,9 @@ class select extends PDO
                 foreach ($where as $key => $value) {
                     $_where .= '`' . $key . '` = :' . $key;
 
-                        for ($i=1; $i < count($where); $i++) { 
-                            $_where .= ', ';
-                        }
+                    if(count($where) > 1) {
+                        $_where .= ' AND ';
+                    }
                     $_where .= ' ';
 
                     if($value == '$lastSelectedId'){
@@ -139,7 +141,7 @@ class select extends PDO
 
                     }
                 }
-                return array('where' => $_where, 'bindarr' => $bindarr);
+                return array('where' => rtrim($_where, " AND "), 'bindarr' => $bindarr);
 
             } else {
                 return array('where' => 'WHERE ' . $where . ' ', 'bindarr' => NULL);
