@@ -140,7 +140,7 @@ class select extends PDO
 
                     }
                 }
-                return array('where' => rtrim($_where, " AND ") . ' ', 'bindarr' => $bindarr);
+                return array('where' => preg_replace('/ AND $/', '', $_where), 'bindarr' => $bindarr);
 
             } else {
                 return array('where' => 'WHERE ' . $where . ' ', 'bindarr' => NULL);
@@ -175,7 +175,7 @@ class select extends PDO
     public function orderby($orderby = NULL)
     {
         $orderby = isset($this->variables['orderby']) ? $this->variables['orderby'] : $orderby;
-        return isset($orderby) ? (is_array($orderby) ? 'ORDER BY `' . $orderby[0] . '` ' . $orderby[1] . ' ' : 'ORDER BY `' . $orderby . '` ') : NULL;
+        return isset($orderby) ? (is_array($orderby) ? ' ORDER BY `' . $orderby[0] . '` ' . $orderby[1] . ' ' : ' ORDER BY `' . $orderby . '` ') : NULL;
     }
 
     /**
@@ -189,7 +189,7 @@ class select extends PDO
     public function limit($limit = NULL)
     {
         $limit = isset($this->variables['limit']) ? $this->variables['limit'] : $limit;
-        return isset($limit) ? (is_array($limit) ? 'LIMIT ' . $limit[0] . ',' . $limit[1] . ' ' : 'LIMIT ' . $limit . ' ') : NULL;
+        return isset($limit) ? (is_array($limit) ? ' LIMIT ' . $limit[0] . ',' . $limit[1] . ' ' : ' LIMIT ' . $limit . ' ') : NULL;
     }
 
    /**

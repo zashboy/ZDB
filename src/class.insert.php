@@ -144,7 +144,7 @@ class  insert extends PDO
 
                     $bindarr[':' . $key] = $value;
                 }
-                return array('set' => rtrim($_set, ", ") . ' ', 'bindarr' => $bindarr);
+                return array('set' => rtrim($_set, ", "), 'bindarr' => $bindarr);
 
             } else {
                 return array('set' => ' ON DUPLICATE KEY UPDATE ' . $set . ' ', 'bindarr' => NULL);
@@ -169,8 +169,7 @@ class  insert extends PDO
 
             $query = $this->conn->prepare($stmt['stmt']);
             $dataRaw = $query->execute($stmt['bindarr']);
-            var_dump($query);
-            var_dump($stmt['bindarr']);
+
             if($query->rowCount() != 0){
                     return $this->data = $query->rowCount() . ' rows inserted';
 

@@ -124,13 +124,13 @@ class update extends PDO
 
                     $bindarr[':' . $key] = $value;
                 }
-                return array('set' => rtrim($_set, ", ") . ' ', 'bindarr' => $bindarr);
+                return array('set' => rtrim($_set, ", "), 'bindarr' => $bindarr);
 
             } else {
                 return array('set' => ' SET ' . $set . ' ', 'bindarr' => NULL);
             }
         } else {
-            return NULL;
+            return ['set' => NULL];
         }
 
     }
@@ -150,22 +150,22 @@ class update extends PDO
             if(is_array($where) && count($where) > 0){
 
                 $_where = '';
-                $_where .= 'WHERE ';
+                $_where .= ' WHERE ';
 
                 foreach ($where as $key => $value) {
                     $_where .= '`' . $key . '` = :' . $key;
 
-                    $_where .= ', ';
+                    $_where .= ' AND ';
 
                     $bindarr[':' . $key] = isset($this->variables['where'][$key]) ? $this->variables['where'][$key] : $value;
                 }
-                return array('where' => rtrim($_where, ", ") . ' ', 'bindarr' => $bindarr);
+                return array('where' => preg_replace('/ AND $/', '', $_where), 'bindarr' => $bindarr);
 
             } else {
-                return array('where' => 'WHERE ' . $where, 'bindarr' => NULL);
+                return array('where' => ' WHERE ' . $where, 'bindarr' => NULL);
             }
         } else {
-            return NULL;
+            return ['where' => NULL];
         }
 
     }
