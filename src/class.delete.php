@@ -111,13 +111,13 @@ class delete extends PDO
                 foreach ($where as $key => $value) {
                     $_where .= '`' . $key . '` = :' . $key;
 
-                        for ($i=1; $i < count($where); $i++) { 
-                            $_where .= ', ';
-                        }
+                    if(count($where) > 1) {
+                        $_where .= ' AND ';
+                    }
 
                     $bindarr[':' . $key] = isset($this->variables['where'][$key]) ? $this->variables['where'][$key] : $value;
                 }
-                return array('where' => rtrim($_where, ", "), 'bindarr' => $bindarr);
+                return array('where' => preg_replace('/ AND $/', '', $_where), 'bindarr' => $bindarr);
 
             } else {
                 return ['where' => 'WHERE ' . $where . ' ', 'bindarr' => NULL];
