@@ -94,7 +94,7 @@ class select extends PDO
             $orderby = $this->orderby($orderby);
             $limit = $this->limit($limit);
 
-            if(!isset($bindarr)){
+            if(!isset($bindarr) && isset($where['bindarr'])){
                 $bindarr_fin = $where['bindarr'];
             } elseif(!isset($where['bindarr'])){
                 $bindarr_fin = $bindarr;
