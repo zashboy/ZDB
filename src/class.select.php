@@ -75,7 +75,7 @@ class select extends PDO
     public function prepareStmt($array = NULL)
     {
 
-        $what = $tableName = $where = $orderby = $limit = $bindarr = NULL;
+        $what = $tableName = $where = $orderby = $groupby = $limit = $bindarr = NULL;
         //default fetch option FETCH_ASSOC
         $fetch = 2;
 
@@ -92,6 +92,7 @@ class select extends PDO
             $tableName = isset($this->variables['tableName']) ? "`" . str_replace("`", "``", $this->variables['tableName']) . "`" : "`" . str_replace("`", "``", $tableName) ."`";
             $where = $this->where($where);
             $orderby = $this->orderby($orderby);
+            $groupby = $this->groupby($groupby);
             $limit = $this->limit($limit);
 
             if(!isset($bindarr) && isset($where['bindarr'])){
@@ -103,7 +104,7 @@ class select extends PDO
             }
 
 
-            return array('stmt' => "SELECT " . $what  .  " FROM " . $tableName . " " . $where['where'] .  $orderby .  $limit, 'bindarr' => $bindarr_fin, 'fetch' => $fetch);
+            return array('stmt' => "SELECT " . $what  .  " FROM " . $tableName . " " . $where['where'] .  $orderby . $groupby . $limit, 'bindarr' => $bindarr_fin, 'fetch' => $fetch);
 
         }
 
@@ -177,7 +178,19 @@ class select extends PDO
         $orderby = isset($this->variables['orderby']) ? $this->variables['orderby'] : $orderby;
         return isset($orderby) ? (is_array($orderby) ? ' ORDER BY `' . $orderby[0] . '` ' . $orderby[1] . ' ' : ' ORDER BY `' . $orderby . '` ') : NULL;
     }
+   /**
+      * Created on Fri Nov 23 2018
+      * @name   groupby()
+      * @desc   prepare the statement's groupby portion to sql
+      * @param  string $groupby
+      * @return string
+     */
 
+    public function groupby($groupby = NULL)
+    {
+        $groupby = isset($this->variables['groupby']) ? $this->variables['groupby'] : $groupby;
+        return isset($groupby) ? ' GROUP BY `' . $groupby . '` ' : NULL;
+    }
     /**
       * Created on Thu Aug 02 2018
       * @name   limit()
