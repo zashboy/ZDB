@@ -101,16 +101,17 @@ class generic extends PDO
 
             $query = $this->conn->prepare($stmt['stmt']);
             $dataRaw = $query->execute($stmt['bindarr']);
-
+            var_dump($query);
             if($query->rowCount() != 0){
                 return $this->data = $query->rowCount();
 
             } else {
-            return $this->data = NULL;
+                return $this->data = NULL;
             }  
             
         } catch (Throwable $t) {
             $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
+            return $this->data = NULL;
         }
 
     }

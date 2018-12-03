@@ -233,6 +233,7 @@ class select extends PDO
             
         } catch (Throwable $t) {
             $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
+            return $this->data = NULL;
         }
 
     }

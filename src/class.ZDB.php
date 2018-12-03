@@ -93,7 +93,7 @@ class ZDB
                 $this->conn = new PDO("mysql:host=" . $this->config['HOSTNAME'] . ";dbname=" . $this->config['DBNAME'], $this->config['USERNAME'], $this->config['PASSWORD']);
                 $this->prepInputFile();
             } else {
-                throw new Exception("There is no appropriate input paremeter added");
+                throw new Exception("There has no appropriate input paremeter been added");
             }
 
         } catch (Throwable $t){
