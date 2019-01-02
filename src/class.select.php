@@ -223,6 +223,11 @@ class select extends PDO
             $this->bindarr = $stmt['bindarr'];
             $this->runQuery = $this->query->execute($this->bindarr);
 
+            if(ZDB_DEBUG_MODE) {
+                echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;">';
+                var_dump($this);
+            }
+
             if($this->query->rowCount() != 0){
                 $data = $this->query->fetchAll($fetch);
 
@@ -232,16 +237,11 @@ class select extends PDO
                 return $this->data = NULL;
             }
             
-            if($this->debug_mode) {
-                echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;z-index:10000;">';
-                var_dump($this);
-            }
-            
         } catch (Throwable $t) {
             $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
 
-            if($this->debug_mode) {
-                echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;z-index:10000;">';
+            if(ZDB_DEBUG_MODE) {
+                echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;">';
                 var_dump($this);
             }
             
