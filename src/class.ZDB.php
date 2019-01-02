@@ -50,7 +50,7 @@ class ZDB
       * @desc Turn on debug mode, it prints out the objects data if an exception has been cought
       * @var  boolean
      */
-    public $debug_mode;
+    public static $debug_mode;
 
     /**
       * Created on Sun Aug 05 2018
@@ -81,13 +81,8 @@ class ZDB
         static::$lastSelectedId = NULL;
         $this->exception = NULL;
         $this->data = NULL;
+        self::$debug_mode = $debug_mode;
         $this->executiontime = -microtime(true);
-
-        if($debug_mode) {
-            define('ZDB_DEBUG_MODE', TRUE);
-        } else {
-            define('ZDB_DEBUG_MODE', FALSE);
-        }
 
         try {
             if(!isset($this->input)){
@@ -117,7 +112,7 @@ class ZDB
 
         } catch (Throwable $t){
             $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
-            if(ZDB_DEBUG_MODE) {
+            if(self::$debug_mode) {
                 echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;">';
                 var_dump($this);
             }

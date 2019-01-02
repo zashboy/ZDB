@@ -103,7 +103,7 @@ class generic extends PDO
             $this->bindarr = $stmt['bindarr'];
             $this->runQuery = $this->query->execute($this->bindarr);
 
-            if(ZDB_DEBUG_MODE) {
+            if(ZDB::$debug_mode) {
                 echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;">';
                 var_dump($this);
             }
@@ -119,7 +119,7 @@ class generic extends PDO
         } catch (Throwable $t) {
             $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
 
-            if(ZDB_DEBUG_MODE) {
+            if(ZDB::$debug_mode) {
                 echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;">';
                 var_dump($this);
             }
