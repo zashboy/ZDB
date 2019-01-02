@@ -11,7 +11,7 @@ Install with composer
 	1. you can define them like global variables in your config.php
 	```PHP
 	<?php
-		define('HOSTNAME', 'your_hostname');
+		define('DSN', 'host=your_hostname or unix_socket=your_info');
 		define('DBNAME', 'your_databasename');
 		define('USERNAME', 'your_username');
 		define('PASSWORD', 'your_password');
