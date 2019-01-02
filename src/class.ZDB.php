@@ -85,6 +85,8 @@ class ZDB
 
         if($debug_mode) {
             define('ZDB_DEBUG_MODE', TRUE);
+        } else {
+            define('ZDB_DEBUG_MODE', FALSE);
         }
 
         try {
