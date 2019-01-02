@@ -99,18 +99,30 @@ class generic extends PDO
 
         try {
 
-            $query = $this->conn->prepare($stmt['stmt']);
-            $dataRaw = $query->execute($stmt['bindarr']);
+            $this->query = $this->conn->prepare($stmt['stmt']);
+            $this->bindarr = $stmt['bindarr'];
+            $this->runQuery = $this->query->execute($this->bindarr);
 
-            if($query->rowCount() != 0){
-                return $this->data = $query->rowCount();
+            if($this->query->rowCount() != 0){
+                return $this->data = $this->query->rowCount();
 
             } else {
                 return $this->data = NULL;
-            }  
+            }
+            
+            if($this->debug_mode) {
+                echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;z-index:10000;">';
+                var_dump($this);
+            }
             
         } catch (Throwable $t) {
             $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
+
+            if($this->debug_mode) {
+                echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;z-index:10000;">';
+                var_dump($this);
+            }
+            
             return $this->data = NULL;
         }
 

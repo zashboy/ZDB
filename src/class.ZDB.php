@@ -46,6 +46,13 @@ class ZDB
     public $var;
 
     /**
+      * Created on Sun Jan 01 2019
+      * @desc Turn on debug mode, it prints out the objects data if an exception has been cought
+      * @var  boolean
+     */
+    public $debug_mode;
+
+    /**
       * Created on Sun Aug 05 2018
       * @desc last selected id
       * @var  int
@@ -65,7 +72,7 @@ class ZDB
       * @return exception on fail
      */
 
-    public function __construct($input = NULL, $stmtid = NULL, $var = NULL)
+    public function __construct($input = NULL, $stmtid = NULL, $var = NULL, $debug_mode = FALSE)
     {
 
         $this->input = $input;
@@ -74,6 +81,7 @@ class ZDB
         static::$lastSelectedId = NULL;
         $this->exception = NULL;
         $this->data = NULL;
+        $this->debug_mode = $debug_mode;
         $this->executiontime = -microtime(true);
 
         try {
@@ -82,7 +90,10 @@ class ZDB
             } elseif(is_array($this->input)){
                 $this->inputarray = $this->input;
                 $this->config = NULL;
-                $this->conn = new PDO("mysql:host=" . HOSTNAME . ";dbname=" . DBNAME, USERNAME, PASSWORD);
+                $this->conn = new PDO("mysql:" . DSN . ";dbname=" . DBNAME, USERNAME, PASSWORD);
+                if(is_null($this->conn)) {
+                    throw new Exception("SQL connection has not been established, check your credentials");
+                }
                 $this->prepInputArray();
             } elseif(is_file($this->input)){
                 $this->inputfile = JSONHandler::read($this->input);
@@ -90,7 +101,10 @@ class ZDB
                     throw new Exception("It's not a valid JSON file");
                 }
                 $this->config = $this->inputfile['config'];
-                $this->conn = new PDO("mysql:host=" . $this->config['HOSTNAME'] . ";dbname=" . $this->config['DBNAME'], $this->config['USERNAME'], $this->config['PASSWORD']);
+                $this->conn = new PDO("mysql:" . $this->config['DSN'] . ";dbname=" . $this->config['DBNAME'], $this->config['USERNAME'], $this->config['PASSWORD']);
+                if(is_null($this->conn)) {
+                    throw new Exception("SQL connection has not been established, check your credentials");
+                }
                 $this->prepInputFile();
             } else {
                 throw new Exception("There has no appropriate input paremeter been added");
@@ -98,6 +112,10 @@ class ZDB
 
         } catch (Throwable $t){
             $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
+            if($this->debug_mode) {
+                echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;z-index:10000;">';
+                var_dump($this);
+            }
         }
 
     }
@@ -235,7 +253,13 @@ class ZDB
 
     public function __debugInfo()
     {
-        return ['data' => $this->data, 'exception' => $this->exception];
+        return [
+            'data' => $this->data,
+            'exception' => $this->exception,
+            'query-string' => $this->query,
+            'query-return-value' => $this->runQuery,
+            'data-array' => $this->bindarr
+        ];
     }
 }
 
