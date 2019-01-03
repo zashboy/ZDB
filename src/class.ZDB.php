@@ -72,7 +72,7 @@ class ZDB
       * @return exception on fail
      */
 
-    public function __construct($input = NULL, $stmtid = NULL, $var = NULL, $debug_mode = FALSE)
+    public function __construct($input = NULL, $stmtid = NULL, $var = NULL, $debug_mode = 0)
     {
 
         $this->input = $input;
@@ -113,8 +113,9 @@ class ZDB
         } catch (Throwable $t){
             $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
             if(self::$debug_mode) {
-                echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;">';
-                var_dump($this);
+                echo '<div style="background-color:red;color:white;overflow-wrap: normal;">';
+                print_r($this);
+                echo '</div>';
             }
         }
 

@@ -187,8 +187,9 @@ class update extends PDO
             $this->runQuery = $this->query->execute($this->bindarr);
 
             if(ZDB::$debug_mode) {
-                echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;">';
-                var_dump($this);
+                echo '<div style="background-color:red;color:white;overflow-wrap: normal;">';
+                print_r($this);
+                echo '</div>';
             }
 
             if($this->query->rowCount() != 0){
@@ -202,8 +203,9 @@ class update extends PDO
             $this->exception = ['message' => $t->getMessage(), 'file' => $t->getFile(), 'line' => $t->getLine()];
 
             if(ZDB::$debug_mode) {
-                echo '<pre style="position:absolute;background-color:red;color:white;overflow:visible;">';
-                var_dump($this);
+                echo '<div style="background-color:red;color:white;overflow-wrap: normal;">';
+                print_r($this);
+                echo '</div>';
             }
             
             return $this->data = NULL;
